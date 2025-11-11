@@ -9,8 +9,8 @@ The app simulates, detects, and explains suspicious financial transactions — b
 
 | Tab | Function |
 |-----|-----------|
-| **Run** | Simulates transactions and injects synthetic “attack” bursts (e.g., \$49.99 repeated transactions). Runs the detection pipeline using Isolation Forest + heuristic rule-based scoring. |
-| **Inspect** | Lets analysts explore flagged transactions. Compares each transaction to a user’s historical profile (z-score, velocity, fan-out, merchant familiarity). |
+| **Run** | Simulates one of the 3 types of attacks that the user chooses. Runs the detection pipeline using Isolation Forest or XGBoost based on user choice |
+| **Inspect** | Lets analysts explore flagged transactions. Does per transaction analysis and reasons via LLM why that row was flagged as an alert|
 | **Report** | Summarizes top-K alerts, recall, precision, and generates **LLM-based incident summaries** and **triage recommendations** for investigation. |
 
 ---
@@ -32,8 +32,8 @@ The app simulates, detects, and explains suspicious financial transactions — b
 
 1. **Data Loading** — Loads demo or synthetic transaction data.  
 2. **Feature Engineering** — Builds velocity, fan-out, and amount z-score features per user.  
-3. **Detection Engine** — Combines Isolation Forest anomaly scores and burst-rule scores into a `combined_score`.  
-4. **Attack Injection (Optional)** — Simulates adversarial bursts (\$49.99 repeated payments) to evaluate detection performance.  
+3. **Detection Engine** — Uses Isolation Forest (or XGBoost) anomaly scores.
+4. **Attack Injection** — Simulates adversarial bursts (like cashout, repeated small transactions, stealth escalation) to evaluate detection performance.  
 5. **LLM Narrative** — Generates analyst summaries explaining anomalies and recommending next steps.  
 
 ---
@@ -52,6 +52,8 @@ streamlit run app/app_simple.py
 
 ollama run phi3:mini
 
+Choose your attack and model on the app - and feel free to experiment different scenarios!
+
 ---
 
 ## Example Outputs
@@ -59,28 +61,29 @@ ollama run phi3:mini
 ### Run Tab
 
 - Inject synthetic fraud bursts
+  
+- Choose which model you want to use
 
-- Detect anomalies using rule + model scoring
+- Choose what feature set do you want to consider
 
-- Visualize scores over time
 
 ### Inspect Tab
 
-- Compare suspicious transactions against user patterns
+- Analyse each transaction separately
 
-- Visualize amount distributions and hour-of-day anomalies
+- Understand why a particular row was flagged as an alert
 
 ### Report Tab
 
 - Generate metrics (precision@K, recall@K)
 
-- Produce LLM-based analyst summaries + triage recommendations
+- Produce LLM-based analyst summaries + investigation strategies
 
 ---
 
 ## Branches
 
-- main	: Documentation and overview (this README, architecture, and setup)
+- main	: Documentation and overview (README for setup and description)
 - master : Full implementation of the simplified fraud detection system
 
 
